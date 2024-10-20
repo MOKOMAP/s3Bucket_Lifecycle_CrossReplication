@@ -1,0 +1,2 @@
+# s3Bucket_Lifecycle_CrossReplication
+S3Bucketを2つ別々のリージョンで作成しクロスリージョンレプリケーションするCFnテンプレートです。
