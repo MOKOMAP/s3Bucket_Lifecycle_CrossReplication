@@ -11,9 +11,9 @@
    
   ####################################
 
-  DESTINATION_AWS_REGION=''  #例：ap-northeast-3
+  DESTINATION_AWS_REGION=''  #レプリケーション先リージョン　例：ap-northeast-3
   
-  SOURCE_AWS_REGION=''  #例：ap-northeast-1
+  SOURCE_AWS_REGION=''  #レプリケーション元リージョン　例：ap-northeast-1
   
   DESTINATION_S3_BUCKETNAME=''  #世界で一意の名前
   
