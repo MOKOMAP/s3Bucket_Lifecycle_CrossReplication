@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  DestinationS3BucketName:
+    Description: "The name of the Destination S3 bucket"
+    Type: String
+
+Resources:
+
+  DestinationS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref DestinationS3BucketName
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+
+Outputs:
+
+  DestinationS3BucketName:
+    Description: "The name of the Destination S3 bucket Name"
+    Value: !Ref DestinationS3Bucket
+
+  DestinationS3BucketArn:
+    Description: "The ARN of the Destination S3 bucket Arn"
+    Value: !GetAtt DestinationS3Bucket.Arn

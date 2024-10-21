@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  DestinationS3BucketName:
+    Description: "The name of the Destination S3 bucket"
+    Type: String
+
+  SourceS3BucketName:
+    Description: "The name of the Source S3 bucket"
+    Type: String
+
+  ReplicationStorageClass:
+    Description: "The name of the B S3 bucket"
+    Type: String #STANDARD | DEEP_ARCHIVE | GLACIER | Glacier | GLACIER_IR | INTELLIGENT_TIERING | ONEZONE_IA | STANDARD_IA
+
+  LifecycleStorageClass:
+    Description: "The name of the B S3 bucket"
+    Type: String #STANDARD | DEEP_ARCHIVE | GLACIER | Glacier | GLACIER_IR | INTELLIGENT_TIERING | ONEZONE_IA | STANDARD_IA
+
+Resources:
+
+  SourceS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref SourceS3BucketName
+      AccessControl: Private
+      ReplicationConfiguration:
+        Role: !GetAtt WorkItemBucketBackupRole.Arn
+        Rules:
+          - Destination:
+              Bucket: 
+                !Join
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref DestinationS3BucketName
+              StorageClass: !Ref ReplicationStorageClass
+            Id: Backup
+            Prefix: '' #全てのオブジェクトに適用
+            Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: LifecycleRule
+            Prefix: '' #全てのオブジェクトに適用
+            Status: Enabled
+            Transitions:
+              - TransitionInDays: 1
+                StorageClass: !Ref LifecycleStorageClass
+      VersioningConfiguration:
+        Status: Enabled
+
+  WorkItemBucketBackupRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - s3.amazonaws.com
+
+  BucketBackupPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:GetReplicationConfiguration'
+              - 's3:GetObjectVersionForReplication'
+              - 's3:ListBucket'
+              - 's3:GetObjectVersion'
+              - 's3:GetObjectVersionAcl'
+              - 's3:GetObjectVersionTagging'
+            Effect: Allow
+            Resource:
+              - !Join
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref SourceS3Bucket
+              - !Join
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref SourceS3Bucket
+                  - /*
+          - Action:
+              - 's3:ReplicateObject'
+              - 's3:ReplicateDelete'
+              - 's3:ReplicateTags'
+              - 's3:GetObjectVersionTagging'
+              - 's3:ObjectOwnerOverrideToBucketOwner'
+            Effect: Allow
+            Resource: 
+              - !Join
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref DestinationS3BucketName
+                  - /*
+      PolicyName: BucketBackupPolicy
+      Roles:
+        - !Ref WorkItemBucketBackupRole
+
+Outputs:
+
+  SourceS3BucketName:
+    Description: "The name of the Source S3 bucket Name"
+    Value: !Ref SourceS3Bucket
+
+  SourceS3BucketArn:
+    Description: "The ARN of the Source S3 bucket Arn"
+    Value: !GetAtt SourceS3Bucket.Arn
