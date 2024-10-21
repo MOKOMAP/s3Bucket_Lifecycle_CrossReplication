@@ -2,11 +2,9 @@
 S3Bucketを2つ別々のリージョンで作成しクロスリージョンレプリケーションするCFnテンプレートです。
 
 ####################################
-#
-# 実行前にパラメータを埋めてください
-# 実行前にShellファイルの権限を755に変えて実行してください
-# $chmod 755 s3Bucket_Lifecycle_CrossReplication.sh
-#
+ 実行前にパラメータを埋めてください
+ 実行前にShellファイルの権限を755に変えて実行してください
+ $chmod 755 s3Bucket_Lifecycle_CrossReplication.sh
 ####################################
 
 DESTINATION_AWS_REGION=''  #例：ap-northeast-3
