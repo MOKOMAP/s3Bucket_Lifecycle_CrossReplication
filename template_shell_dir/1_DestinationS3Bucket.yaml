@@ -21,7 +21,11 @@ Outputs:
   DestinationS3BucketName:
     Description: "The name of the Destination S3 bucket Name"
     Value: !Ref DestinationS3Bucket
+    Export:
+      Name: DestinationS3BucketName
 
   DestinationS3BucketArn:
     Description: "The ARN of the Destination S3 bucket Arn"
     Value: !GetAtt DestinationS3Bucket.Arn
+    Export:
+      Name: DestinationS3BucketArn
