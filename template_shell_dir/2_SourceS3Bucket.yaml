@@ -106,7 +106,11 @@ Outputs:
   SourceS3BucketName:
     Description: "The name of the Source S3 bucket Name"
     Value: !Ref SourceS3Bucket
+    Export:
+      Name: SourceS3BucketName
 
   SourceS3BucketArn:
     Description: "The ARN of the Source S3 bucket Arn"
     Value: !GetAtt SourceS3Bucket.Arn
+    Export:
+      Name: SourceS3BucketArn
